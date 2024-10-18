@@ -1,0 +1,40 @@
+%runfile c:/users/steve/.spyder-py3/untitled0.py --wdir
+Results for FCFS:
+Process ID	Arrival Time	Burst Time	Waiting Time	Turnaround Time
+----------	------------	----------	------------	--------------
+	1			0           	8         	0           	8              
+	2			1           	4         	7           	11             
+	3			2           	9         	10          	19             
+	4			3           	5         	18          	23             
+Average Waiting Time: 8.75
+Average Turnaround Time: 15.25
+
+Results for SJF:
+Process ID	Arrival Time	Burst Time	Waiting Time	Turnaround Time
+----------	------------	----------	------------	--------------
+	1			0           	8         	0           	8              
+	2			1           	4         	7           	11             
+	4			3           	5         	14          	19             
+	4			3           	5         	14          	19             
+Average Waiting Time: 8.75
+Average Turnaround Time: 14.25
+
+Results for SRT:
+Process ID	Arrival Time	Burst Time	Waiting Time	Turnaround Time
+----------	------------	----------	------------	--------------
+	1			0           	8         	0           	8              
+	2			1           	4         	7           	11             
+	3			2           	9         	0           	9              
+	4			3           	5         	14          	19             
+Average Waiting Time: 5.25
+Average Turnaround Time: 11.75
+
+Results for Round Robin:
+Process ID	Arrival Time	Burst Time	Waiting Time	Turnaround Time
+----------	------------	----------	------------	--------------
+	1			0           	8         	0           	8              
+	2			1           	4         	7           	11             
+	3			2           	9         	0           	9              
+	4			3           	5         	14          	19             
+Average Waiting Time: 5.25
+Average Turnaround Time: 11.75

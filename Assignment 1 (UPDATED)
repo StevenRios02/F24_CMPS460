@@ -1,0 +1,183 @@
+"""
+Created on Fri Oct 11 10:20:05 2024
+
+@author: steve
+"""
+import heapq
+
+class Process:
+    # Create the variables needed in the program
+    def __init__(self, pid, arrival_time, burst_time):
+        self.pid = pid
+        self.arrival_time = arrival_time
+        self.burst_time = burst_time
+        self.remaining_time = burst_time
+        self.waiting_time = 0
+        self.turnaround_time = 0
+        self.preemption_count = 0
+     
+        #allows srt_scheduling to compare Process objects
+    def __lt__(self, other):
+        return self.remaining_time < other.remaining_time
+    
+
+def fcfs_scheduling(processes):
+    processes.sort(key=lambda x: x.arrival_time)
+    current_time = 0
+
+    for process in processes:
+        if current_time < process.arrival_time:
+            current_time = process.arrival_time
+        process.waiting_time = current_time - process.arrival_time
+        process.turnaround_time = process.waiting_time + process.burst_time
+        current_time += process.burst_time
+
+    return processes
+
+def sjf_scheduling(processes):
+    processes.sort(key=lambda x: (x.arrival_time, x.burst_time))
+    current_time = 0
+    ready_queue = []  
+    completed_processes = []
+
+    while len(completed_processes) < len (processes):
+        # Add processes to ready queue
+        for process in processes:
+            if process.arrival_time <= current_time and process not in ready_queue and process not in completed_processes:
+                heapq.heappush(ready_queue, (process.burst_time, process))
+
+        # Find the shortest job using heapq
+        if ready_queue:
+            shortest_job = heapq.heappop(ready_queue)[1]
+
+            # Execute the shortest job
+            shortest_job.waiting_time = current_time - shortest_job.arrival_time
+            shortest_job.turnaround_time = shortest_job.waiting_time + shortest_job.burst_time
+            current_time += shortest_job.burst_time
+            shortest_job.remaining_time = 0
+
+            completed_processes.append(shortest_job)
+        else:
+            current_time += 1
+            
+    return completed_processes
+
+def srt_scheduling(processes):
+    current_time = 0
+    ready_queue = []
+    current_process = None
+
+    while any(process.remaining_time > 0 for process in processes):
+        # Add processes to ready queue
+        for process in processes:
+            if process.arrival_time <= current_time and process not in ready_queue and process.remaining_time > 0:
+                heapq.heappush(ready_queue, process)  # Push the Process object directly onto the heap
+
+        # Find the process with the shortest remaining time
+        if ready_queue:
+            next_process = heapq.heappop(ready_queue)
+            if current_process and next_process.remaining_time < current_process.remaining_time:
+                # Check preemption count before preempting
+                if current_process.preemption_count < 2:  # Adjust threshold as needed
+                    current_process.preemption_count += 1
+                    heapq.heappush(ready_queue, current_process)
+                else:
+                    current_process.preemption_count = 0  # Reset preemption count after preemption
+                    current_process.start_time = current_time
+                    heapq.heappush(ready_queue, current_process)
+                    current_process = next_process
+            elif not current_process:
+                current_process = next_process
+                current_process.start_time = current_time
+
+            # Execute the process for one unit of time
+            current_process.remaining_time -= 1
+            current_time += 1
+
+            # If process is complete, update turnaround and waiting times
+            if current_process.remaining_time == 0:
+                current_process.turnaround_time = current_time - current_process.arrival_time
+                current_process.waiting_time = current_process.turnaround_time - current_process.burst_time
+                current_process = None
+        else:
+            current_time += 1  # Increment time if no process is ready
+
+    return processes
+
+
+
+def round_robin_scheduling(processes, time_quantum):
+    current_time = 0
+    ready_queue = []
+
+    while any(process.remaining_time > 0 for process in processes):
+        # Add processes to ready queue
+        for process in processes:
+            if process.arrival_time <= current_time and process not in ready_queue:
+                ready_queue.append(process)
+
+        # If there are processes in the ready queue
+        if ready_queue:
+            current_process = ready_queue.pop(0)
+
+            # Execute the process for the time quantum or until completion
+            if current_process.remaining_time > time_quantum:
+                current_process.remaining_time -= time_quantum
+                current_time += time_quantum
+            else:
+                current_time += current_process.remaining_time
+                current_process.remaining_time = 0
+                current_process.turnaround_time = current_time - current_process.arrival_time
+                current_process.waiting_time = current_process.turnaround_time - current_process.burst_time
+
+            # If the process is not finished, add it back to the end of the queue
+            if current_process.remaining_time > 0:
+                ready_queue.append(current_process)
+
+    return processes
+
+def display_results(algorithm_name, processes):
+    print(f"Results for {algorithm_name}:")
+
+    # Create a table header
+    print("Process ID\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time")
+    print("----------\t------------\t----------\t------------\t--------------")
+
+    # Use list comprehension for efficient data formatting
+    data = [{'Process ID': process.pid, 'Arrival Time': process.arrival_time,
+             'Burst Time': process.burst_time, 'Waiting Time': process.waiting_time,
+             'Turnaround Time': process.turnaround_time} for process in processes]
+
+    # Print each process data in a formatted way
+    for row in data:
+        print(f"\t{row['Process ID']}\t\t\t{row['Arrival Time']:<12}\t{row['Burst Time']:<10}\t{row['Waiting Time']:<12}\t{row['Turnaround Time']:<15}")
+
+    # Calculate and print average waiting and turnaround times
+    total_waiting_time = sum(process.waiting_time for process in processes)
+    total_turnaround_time = sum(process.turnaround_time for process in processes)
+    num_processes = len(processes)
+    average_waiting_time = total_waiting_time / num_processes
+    average_turnaround_time = total_turnaround_time / num_processes
+    print(f"Average Waiting Time: {average_waiting_time:.2f}")
+    print(f"Average Turnaround Time: {average_turnaround_time:.2f}\n")
+
+# Example usage
+Processes = [
+    Process(1, 0, 8),
+    Process(2, 1, 4),
+    Process(3, 2, 9),
+    Process(4, 3, 5)
+]
+
+# Run all algorithms and display results
+scheduled_processes_fcfs = fcfs_scheduling(Processes)
+display_results("FCFS", scheduled_processes_fcfs)
+
+scheduled_processes_sjf = sjf_scheduling(Processes)
+display_results("SJF", scheduled_processes_sjf)
+
+scheduled_processes_srt = srt_scheduling(Processes)
+display_results("SRT", scheduled_processes_srt)
+
+scheduled_processes_rr = round_robin_scheduling(Processes, time_quantum=2)
+display_results("Round Robin", scheduled_processes_rr)

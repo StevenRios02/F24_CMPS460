@@ -1,0 +1,51 @@
+Python 3.11.10 | packaged by conda-forge | (main, Oct 16 2024, 01:17:14) [MSC v.1941 64 bit (AMD64)]
+Type "copyright", "credits" or "license" for more information.
+
+IPython 8.29.0 -- An enhanced Interactive Python. Type '?' for help.
+
+%runfile 'C:/Users/steve/OneDrive/Desktop/School/Operating Systems/assignment 2.py' --wdir
+
+Process P1 Requests Resources: {'R1': 0, 'R2': 1, 'R3': 1}
+Resources allocated to Process P1
+
+Current State of Resources:
+R1: 3 available
+R2: 1 available
+R3: 1 available
+
+Current State of Processes:
+Process P1: Allocation {'R1': 0, 'R2': 1, 'R3': 1}, Request {'R1': 0, 'R2': 0, 'R3': 0}
+Process P2: Allocation {'R1': 0, 'R2': 0, 'R3': 0}, Request {'R1': 0, 'R2': 1, 'R3': 1}
+Process P3: Allocation {'R1': 0, 'R2': 0, 'R3': 0}, Request {'R1': 1, 'R2': 0, 'R3': 1}
+
+Process P2 Requests Resources: {'R1': 0, 'R2': 1, 'R3': 1}
+Resources allocated to Process P2
+
+Current State of Resources:
+R1: 3 available
+R2: 0 available
+R3: 0 available
+
+Current State of Processes:
+Process P1: Allocation {'R1': 0, 'R2': 1, 'R3': 1}, Request {'R1': 0, 'R2': 0, 'R3': 0}
+Process P2: Allocation {'R1': 0, 'R2': 1, 'R3': 1}, Request {'R1': 0, 'R2': 0, 'R3': 0}
+Process P3: Allocation {'R1': 0, 'R2': 0, 'R3': 0}, Request {'R1': 1, 'R2': 0, 'R3': 1}
+
+Process P3 Requests Resources: {'R1': 1, 'R2': 0, 'R3': 1}
+Process P3 must wait: Resources unavailable
+
+Current State of Resources:
+R1: 3 available
+R2: 0 available
+R3: 0 available
+
+Current State of Processes:
+Process P1: Allocation {'R1': 0, 'R2': 1, 'R3': 1}, Request {'R1': 0, 'R2': 0, 'R3': 0}
+Process P2: Allocation {'R1': 0, 'R2': 1, 'R3': 1}, Request {'R1': 0, 'R2': 0, 'R3': 0}
+Process P3: Allocation {'R1': 0, 'R2': 0, 'R3': 0}, Request {'R1': 1, 'R2': 0, 'R3': 1}
+
+Detecting Deadlock...
+Process P1 can finish
+Process P2 can finish
+Process P3 can finish
+No Deadlock Detected
